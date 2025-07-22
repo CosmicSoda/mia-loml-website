@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday LOML!!!</title>
+    <!-- Google Fonts - Roboto for main text -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+    <!-- Google Fonts - Caveat for handwritten letter feel -->
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* General Body Styles */
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background: #f7f0ff; /* Light purple background */
+            color: #333;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
+
+        /* Header Section Styles */
+        header {
+            height: 100vh; /* Full viewport height */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            background: linear-gradient(to bottom right, #e8d3ff, #fbe4ff); /* Gradient background */
+            text-align: center;
+            padding: 2rem;
+            box-sizing: border-box; /* Include padding in height */
+        }
+
+        header h1 {
+            font-size: 3rem; /* Large heading for impact */
+            color: #7e57c2; /* Purple color */
+            animation: fadeIn 2s ease-in-out; /* Fade-in animation */
+            margin-bottom: 1rem;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            margin-top: 1rem;
+            color: #555;
+        }
+
+        /* Keyframe for header fade-in */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Highlight Days Section Styles */
+        .highlight-days {
+            background: linear-gradient(135deg, #d1c4e9, #b39ddb); /* Purple gradient */
+            padding: 4rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .highlight-days h2 {
+            font-size: 2.5rem;
+            color: #6a1b9a; /* Darker purple */
+            margin-bottom: 1rem;
+        }
+
+        .highlight-days p {
+            font-size: 1.2rem;
+            color: #4a148c; /* Even darker purple */
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Pseudo-elements for sparkle/heart animations */
+        .highlight-days::after {
+            content: "✨";
+            font-size: 6rem;
+            color: #ce93d8;
+            position: absolute;
+            top: -30px;
+            right: -10px;
+            animation: sparkle 2s infinite ease-in-out alternate;
+            opacity: 0.3;
+        }
+
+        .highlight-days::before {
+            content: "💜";
+            font-size: 6rem;
+            color: #ce93d8;
+            position: absolute;
+            bottom: -30px;
+            left: -10px;
+            animation: sparkle 3s infinite ease-in-out alternate;
+            opacity: 0.3;
+        }
+
+        /* Keyframe for sparkle animation */
+        @keyframes sparkle {
+            0% { transform: rotate(0deg) scale(1); opacity: 0.2; }
+            100% { transform: rotate(15deg) scale(1.1); opacity: 0.6; }
+        }
+
+        /* Letter/Envelope Styles */
+        .letter {
+            margin: 150px auto;
+            max-width: 700px; /* Increased max-width */
+            height: 800px; /* Increased height to accommodate larger paper */
+            position: relative;
+            overflow: hidden;
+            display: block;
+        }
+
+        /* Animations for opening and closing the letter */
+        .letter--open .paper {
+            animation-name: upthenscale;
+            animation-duration: 0.6s;
+            animation-fill-mode: forwards;
+        }
+        .letter--close .paper {
+            animation-name: scalethendown;
+            animation-duration: 0.4s;
+            animation-fill-mode: forwards;
+        }
+        .letter--open .paper-content {
+            animation-name: waitfade;
+            animation-duration: 1.5s;
+            animation-fill-mode: forwards;
+        }
+
+        .paper-content {
+            color: #545454;
+            font-family: 'Caveat', cursive; /* Apply handwritten font */
+            font-weight: 700;
+            padding: 25px;
+            opacity: 0;
+            line-height: 1.6;
+            height: 100%; /* Ensure content takes full height of paper */
+            overflow-y: auto; /* Add scrollbar if content overflows vertically */
+            box-sizing: border-box; /* Include padding in height */
+            font-size: 1.2rem; /* Slightly larger font for readability */
+        }
+
+        .paper {
+            height: 50px;
+            width: 90px;
+            background: #f1f0c3; /* Light yellow paper */
+            /* Adjusted initial position to be lower */
+            transform: translateY(690px);
+            margin: 0 auto;
+            transition: transform 0.3s 0.1s ease;
+            border-radius: 2px;
+            position: relative;
+        }
+
+        .envelope {
+            width: 94px;
+            height: 60px;
+            background: #f36363; /* Red envelope */
+            position: relative;
+            margin: auto;
+            z-index: 2;
+            cursor: pointer;
+            border-radius: 3px;
+            /* Adjusted initial position to be lower */
+            transform: translateY(750px);
+            animation: wiggle 0.3s 0.2s infinite; /* Wiggle animation for attention */
+        }
+
+        .envelope-paper {
+            height: 50px;
+            width: 90px;
+            background: #f1f0c3;
+            transform: translateY(0);
+            margin: 0 auto;
+            transition: transform 0.3s 0.1s ease;
+            border-radius: 2px;
+            position: absolute;
+            border: 2px solid transparent;
+        }
+
+        /* Hide envelope paper and detail when letter is open/closing */
+        .letter--open .envelope-paper,
+        .letter--close .envelope-paper,
+        .letter--open .envelope-detail::after {
+            visibility: hidden;
+        }
+
+        .envelope-flap {
+            width: 0;
+            height: 0;
+            border-left: 45px solid transparent;
+            border-right: 45px solid transparent;
+            border-bottom: 45px solid #f36363; /* Red flap */
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            margin: auto;
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .letter--open .envelope-flap {
+            transform: translateY(-45px); /* Move flap up when open */
+        }
+
+        .envelope-detail {
+            overflow: hidden;
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            background: #f36363;
+            border-top: 2px solid transparent;
+        }
+
+        /* Pseudo-elements for envelope design */
+        .envelope-detail::before,
+        .envelope-detail::after {
+            content: '';
+            width: 70px;
+            height: 70px;
+            background: #f36363;
+            position: absolute;
+            left: 0;
+            right: 0;
+            margin: auto;
+            transform: rotate(45deg);
+            border: 4px solid #e65454;
+        }
+
+        .envelope-detail::before {
+            top: 30px;
+        }
+
+        .envelope-detail::after {
+            top: -45px;
+        }
+
+        .paper-close {
+            position: absolute;
+            right: 10px;
+            top: 5px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: inline-block;
+            cursor: pointer;
+            color: #888;
+            transition: color 0.2s ease;
+        }
+
+        .paper-close:hover {
+            color: #333;
+        }
+
+        /* Keyframes for letter animations */
+        @keyframes upthenscale {
+            0% { transform: translateY(690px); } /* Adjusted start position for animation */
+            50% { transform: translateY(0); }
+            60% { height: 100px; width: 90px; transform: translateY(0); }
+            100% {
+                height: 700px; /* New opened paper height */
+                width: 100%;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scalethendown {
+            0% {
+                height: 700px; /* New opened paper height */
+                width: 100%;
+                transform: translateY(0);
+            }
+            50% { height: 100px; width: 90px; transform: translateY(0); }
+            100% { transform: translateY(690px); } /* Adjusted end position for animation */
+        }
+
+        @keyframes waitfade {
+            0%, 50% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes wiggle {
+            0% { transform: translateY(750px) rotate(0); } /* Adjusted start position */
+            25% { transform: translateY(750px) rotate(2deg); }
+            50% { transform: translateY(750px) rotate(0deg); }
+            75% { transform: translateY(750px) rotate(-2deg); }
+            100% { transform: translateY(750px) rotate(0); }
+        }
+
+        /* Section general styling */
+        section {
+            padding: 4rem 1rem; /* Responsive padding */
+            text-align: center;
+            max-width: 900px; /* Max width for content */
+            margin: 0 auto; /* Center sections */
+        }
+
+        section h2 {
+            font-size: 2.5rem;
+            color: #7e57c2;
+            margin-bottom: 2rem;
+        }
+
+        /* Video styling */
+        video {
+            display: block;
+            margin: 2rem auto;
+            border-radius: 12px;
+            width: 90%; /* Responsive width */
+            max-width: 600px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Heartbeat button styling */
+        .heartbeat-button {
+            display: block;
+            margin: 4rem auto;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            background: #ba68c8; /* Purple button */
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .heartbeat-button:hover {
+            transform: scale(1.05);
+            background-color: #9c27b0; /* Darker purple on hover */
+        }
+
+        /* Spotify iframe styling */
+        iframe {
+            display: block;
+            margin: 0 auto;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px; /* Match video max-width */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Cute Section Styling */
+        .cute-section {
+            background: #f8e8ff; /* Lighter purple background */
+            padding: 4rem 2rem;
+            text-align: center;
+            border-top: 2px dashed #ba68c8;
+            border-bottom: 2px dashed #ba68c8;
+        }
+
+        .cute-section h2 {
+            font-size: 2rem;
+            color: #9c27b0;
+            margin-bottom: 1rem;
+        }
+
+        .cute-section p {
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: auto;
+            color: #444;
+            line-height: 1.8;
+        }
+
+        .cute-section div {
+            font-size: 2rem;
+            margin-top: 1rem;
+        }
+
+        /* Custom Alert/Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .modal-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            position: relative;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.visible .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-close-button {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            cursor: pointer;
+            color: #888;
+            transition: color 0.2s ease;
+        }
+
+        .modal-close-button:hover {
+            color: #333;
+        }
+
+        #alertMessage {
+            font-size: 1.5rem;
+            color: #6a1b9a;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        /* Style for the new Play Music button */
+        .play-music-button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            font-size: 1rem;
+            background: #7e57c2; /* Purple */
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .play-music-button:hover {
+            background-color: #673ab7; /* Darker purple */
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Hidden Audio Element -->
+    <audio id="birthdaySong" preload="auto">
+        <source src="%EC%9D%B4%ED%81%B4%EB%A6%BD%EC%8A%A4%20(ECLIPSE)%20-%20%EC%86%8C%EB%82%98%EA%B8%B0%20%5B%EC%84%A0%EC%9E%AC%20%EC%97%85%EA%B3%A0%20%ED%8A%80%EC%96%B4%20OST%5D%20%5B%EA%B0%80%EC%82%ACLyrics%5D.mp3" type="audio/mpeg">
+        Your browser does not support the audio element. Please ensure the audio file is correctly placed and supported.
+    </audio>
+
+    <script>
+        // Get the audio element
+        const birthdaySong = document.getElementById('birthdaySong');
+        console.log("Audio element src:", birthdaySong.src); // Log the source to console for debugging
+
+        // Function to toggle the letter open/close state
+        function toggleLetter() {
+            const letter = document.querySelector('.letter');
+            if (letter.classList.contains('letter--open')) {
+                // If letter is open, close it
+                letter.classList.remove('letter--open');
+                letter.classList.add('letter--close');
+                // Remove the close class after animation to reset
+                setTimeout(() => {
+                    letter.classList.remove('letter--close');
+                }, 600);
+            } else {
+                // If letter is closed, open it. Song playback is now handled by the play button.
+                letter.classList.remove('letter--close');
+                letter.classList.add('letter--open');
+            }
+        }
+
+        // Function to explicitly close the letter and pause song
+        function closeLetter() {
+            const letter = document.querySelector('.letter');
+            letter.classList.remove('letter--open');
+            letter.classList.add('letter--close');
+            birthdaySong.pause(); // Pause song when letter is explicitly closed
+            birthdaySong.currentTime = 0; // Rewind to start
+            // Remove the close class after animation to reset
+            setTimeout(() => {
+                letter.classList.remove('letter--close');
+            }, 600);
+        }
+
+        // Function to play the birthday song
+        function playBirthdaySong() {
+            if (birthdaySong.src) {
+                birthdaySong.play().catch(e => console.error("Error playing audio:", e));
+            } else {
+                console.warn("Audio source not set or not supported. Please ensure a valid MP3 or WAV file is provided for 'birthdaySong'.");
+            }
+        }
+
+        // Function to show the custom alert modal
+        function showCustomAlert(message) {
+            const customAlert = document.getElementById('customAlert');
+            const alertMessage = document.getElementById('alertMessage');
+            alertMessage.textContent = message;
+            customAlert.classList.add('visible');
+        }
+
+        // Function to close the custom alert modal
+        function closeCustomAlert() {
+            const customAlert = document.getElementById('customAlert');
+            customAlert.classList.remove('visible');
+        }
+    </script>
+
+    <!-- Header Section -->
+    <header>
+        <h1>Happy Birthday LOML!!! 🥹🎂💜</h1>
+        <p>scroll down for all your surprises... 🎁</p>
+    </header>
+
+    <!-- Letter Section -->
+    <div class="letter">
+        <div class="envelope" onclick="toggleLetter()">
+            <div class="envelope-flap"></div>
+            <div class="envelope-paper"></div>
+            <div class="envelope-detail"></div>
+        </div>
+        <div class="paper">
+            <div class="paper-content">
+                <div class="paper-close" onclick="closeLetter()">x</div>
+                <p>Happy Birthday Mia,</p>
+
+                <p>Happiest Birthday to my little baby, I can’t believe you are 19 already. You’ve grown so much from the little girl I saw in the bowling alley. Though I hate that I can’t be there in person to celebrate your birthday and hate that I can’t handwrite this letter to you, my heart is overflowing with joy to know that today is your birthdayyyyyyyyyyyyyyyyyyy. It’s your birhtdayyyyyyyyyyyyy!!!!!!!!!!! You are the most beautiful and thoughtful girl I’ve met, and I want to thank you for staying by my side. All the time I’ve spent with you has been magical, every single second, and it’s a feeling that I can’t simply describe with words but is beyond what my heart can take. If I try to describe in words, it feels like an outerspace experience where I'm above time and reality, almost like a dream. I realize that hours I spend with you go by the fastest, but they are the hours I look forward to the most, really. you taught me a lot of things. Not only about life, but how its okay to feel something extraordinary about someone deeply. I think some part of my soul has been waiting for this moment forever. Just to say: it’s you. It’s always been you. You’re the only person i feel comfortable with. With the laughs, the silences, and the serious matters. Life can be hectic. Alot of times, nothing seems to go the way you want. Probably were times when you wanted to vent to me, but hesitated because you didn’t want to burden me. But when that happens, lean on me, and tell me everything. I will believe in you even if no one else deos. Even if you don’t believe in yourself. And as long as I’m alive, you’ll always have someone proud of you in everything, everything you do.</p>
+
+                <p>I’ve been thinking a lot about what you mean to me and where I am in my life. And the truth is, you are what I wake up for. You are the reason I move through my days. You are the reason I push myself to become better, not just for the world, but for you. To be a better person. A better boyfriend. And maybe, if I try hard enough, the perfect boy for the girl I saw years ago, and fell hopelessly for.</p>
+
+                <p>My heart chooses you.</p>
+
+                <p>Every day I wake up, I choose to love you, and I will continue to choose you until my last breath.<br>I choose you, again and again. I choose to love you, to care for you, to cherish and adore you. To stand beside you, to be loyal and honest with you, and to fight for you when things get hard. Every day, I make that choice.</p>
+
+                <p>You deserve all of this and so much more. I've loved you deeply, even if I haven’t always shown it the way you deserve. But I’m learning, because you inspire me to grow. Before you, I didn’t know love. What it meant to be seen, to be held, to be understood.</p>
+
+                <p>If I had the power, I’d take every burden off your shoulders. Your pain, your worries, your sadness. I’d hurt in your place, cry in your place, take it all on just to see you at peace. I’d do anything, everything, just to know you’re living the perfect life.</p>
+
+                <p>I’ll do everything I can to make sure your life turns out the way you dream it.<br>Because seeing you happy is enough to make everything I’ve been through worth it.<br>I just want to see you smile and live a happy life and have always wanted that regardless of how i feel, so just live a happy and fun life for me, then I’ll be smiling too.</p>
+
+                <p>So on your birthday, I just want to say thank you, for being the heart of my youth.<br>For making me feel love in its purest, rawest form.<br>And for still being here with me, through it all.<br>Because in the end I will choose you over and over again. Over everyone else, under any circumstances.</p>
+
+                <p>Have a perfect day Mia. I hope today treats you kindly, and that your beautiful and bright smile lights up this dark world the way it always does.</p>
+
+                <p>Yours Truly,<br>Sunghoon</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Play Music Button -->
+    <button class="play-music-button" onclick="playBirthdaySong()">Play Birthday Music 🎶</button>
+
+    <!-- Heartbeat Button Section -->
+    <section>
+        <h2>Push Me (for Heartbeat 💓)</h2>
+        <button class="heartbeat-button" onclick="showCustomAlert('💓 thump thump 💓 that’s me thinking about you')">
+            Hold to feel my heartbeat
+        </button>
+    </section>
+
+    <!-- Spotify Song Section -->
+    <section>
+        <h2>Your Song 🎧</h2>
+        <iframe src="https://open.spotify.com/embed/track/1N9TrsZZXX8GQvOvD3PV23?utm_source=generator" width="90%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    </section>
+
+    <!-- Highlight Days Section -->
+    <section class="highlight-days">
+        <h2>255 Days of Us 💜</h2>
+        <p>
+            It’s been 255 days since our story began. That’s 255 sunrises, 255 shared thoughts, 255 reasons I’m grateful for you.
+        </p>
+    </section>
+
+    <!-- New Surprises in Korea Section -->
+    <section class="surprises-korea-section" style="background: #e0f2f7; padding: 4rem 2rem; text-align: center; border-top: 2px dashed #81d4fa; border-bottom: 2px dashed #81d4fa;">
+        <h2 style="font-size: 2.5rem; color: #0288d1; margin-bottom: 1.5rem;">Your Surprises Await in Korea! 🇰🇷</h2>
+        <p style="font-size: 1.2rem; max-width: 700px; margin: auto; color: #01579b; line-height: 1.8;">
+            Special surprises are waiting for you when you return to Korea!
+        </p>
+        <div style="font-size: 2.5rem; margin-top: 2rem;">✈️🎁💖</div>
+    </section>
+
+    <!-- Custom Alert Modal HTML -->
+    <div id="customAlert" class="modal-overlay">
+        <div class="modal-content">
+            <span class="modal-close-button" onclick="closeCustomAlert()">&times;</span>
+            <p id="alertMessage"></p>
+        </div>
+    </div>
+
+</body>
+</html>
